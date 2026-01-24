@@ -64,4 +64,4 @@ Each user needs their own Claude Code CLI login - no API keys are shared or expo
 
 ## License
 
-MIT License
+Open Source
