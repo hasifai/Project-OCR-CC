@@ -73,7 +73,7 @@ class OCRTranslator:
         # Label
         self.overlay_label = tk.Label(
             self.overlay_inner,
-            text="Position over VN text box\nDrag edges to resize | Drag center to move",
+            text="Position over text area\nDrag edges to resize | Drag center to move",
             bg='white',
             fg='purple',
             font=('Segoe UI', 10)
@@ -536,7 +536,7 @@ ENGLISH:
                     self.root.after(
                         0,
                         lambda: self.update_translation(
-                            japanese or "Could not read Japanese text",
+                            japanese or "Could not read text",
                             english or response
                         )
                     )
