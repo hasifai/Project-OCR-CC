@@ -31,7 +31,7 @@ class OCRTranslator:
         self.root = tk.Tk()
         self.root.title("OCR Translator")
         self.root.geometry("600x750+950+100")
-        self.root.configure(bg='#1a1a2e')
+        self.root.configure(bg='#0d0d0d')
         self.root.protocol("WM_DELETE_WINDOW", self.quit_app)
 
         # Create glass overlay as Toplevel
@@ -60,8 +60,8 @@ class OCRTranslator:
         # Create frame with visible border
         self.overlay_frame = tk.Frame(
             self.overlay,
-            bg='purple',
-            highlightbackground='purple',
+            bg='#00cc33',
+            highlightbackground='#00cc33',
             highlightthickness=3
         )
         self.overlay_frame.pack(fill=tk.BOTH, expand=True)
@@ -75,7 +75,7 @@ class OCRTranslator:
             self.overlay_inner,
             text="Position over text area\nDrag edges to resize | Drag center to move",
             bg='white',
-            fg='purple',
+            fg='#00cc33',
             font=('Segoe UI', 10)
         )
         self.overlay_label.pack(expand=True)
@@ -132,15 +132,15 @@ class OCRTranslator:
         style.configure('TButton', font=('Segoe UI', 10))
 
         # Header
-        header = tk.Frame(self.root, bg='#16213e')
+        header = tk.Frame(self.root, bg='#0a1a0a')
         header.pack(fill=tk.X, padx=10, pady=(10, 5))
 
         title_label = tk.Label(
             header,
             text="OCR Translator",
             font=('Segoe UI', 16, 'bold'),
-            fg='#e94560',
-            bg='#16213e'
+            fg='#00ff41',
+            bg='#0a1a0a'
         )
         title_label.pack(side=tk.LEFT, padx=10)
 
@@ -149,19 +149,19 @@ class OCRTranslator:
             text="Press F1 to capture",
             font=('Segoe UI', 10),
             fg='#a0a0a0',
-            bg='#16213e'
+            bg='#0a1a0a'
         )
         self.status_label.pack(side=tk.RIGHT, padx=10)
 
         # Control buttons bar
-        control_bar = tk.Frame(self.root, bg='#1a1a2e')
+        control_bar = tk.Frame(self.root, bg='#0d0d0d')
         control_bar.pack(fill=tk.X, padx=10, pady=(0, 10))
 
         self.auto_btn = tk.Button(
             control_bar,
             text="Auto: OFF",
             command=self.toggle_auto,
-            bg='#0f3460',
+            bg='#1a3a1a',
             fg='white',
             relief=tk.FLAT,
             font=('Segoe UI', 10)
@@ -172,7 +172,7 @@ class OCRTranslator:
             control_bar,
             text="Clear History",
             command=self.clear_history,
-            bg='#e94560',
+            bg='#00ff41',
             fg='white',
             relief=tk.FLAT,
             font=('Segoe UI', 10)
@@ -183,7 +183,7 @@ class OCRTranslator:
             control_bar,
             text="Toggle Overlay",
             command=self.toggle_overlay,
-            bg='#533483',
+            bg='#1a3a1a',
             fg='white',
             relief=tk.FLAT,
             font=('Segoe UI', 10)
@@ -195,7 +195,7 @@ class OCRTranslator:
             control_bar,
             text="Haiku",
             command=self.toggle_model,
-            bg='#00ff88',
+            bg='#39ff14',
             fg='black',
             relief=tk.FLAT,
             font=('Segoe UI', 10)
@@ -203,7 +203,7 @@ class OCRTranslator:
         self.model_btn.pack(side=tk.LEFT, padx=5)
 
         # Interval control frame
-        interval_frame = tk.Frame(control_bar, bg='#1a1a2e')
+        interval_frame = tk.Frame(control_bar, bg='#0d0d0d')
         interval_frame.pack(side=tk.RIGHT, padx=5)
 
         interval_label = tk.Label(
@@ -211,7 +211,7 @@ class OCRTranslator:
             text="Interval:",
             font=('Segoe UI', 9),
             fg='#a0a0a0',
-            bg='#1a1a2e'
+            bg='#0d0d0d'
         )
         interval_label.pack(side=tk.LEFT)
 
@@ -223,10 +223,10 @@ class OCRTranslator:
             orient=tk.HORIZONTAL,
             variable=self.interval_var,
             command=self.update_interval,
-            bg='#1a1a2e',
+            bg='#0d0d0d',
             fg='white',
             highlightthickness=0,
-            troughcolor='#0f3460',
+            troughcolor='#1a3a1a',
             length=100
         )
         self.interval_slider.pack(side=tk.LEFT)
@@ -235,8 +235,8 @@ class OCRTranslator:
             interval_frame,
             text="5s",
             font=('Segoe UI', 9),
-            fg='#00ff88',
-            bg='#1a1a2e'
+            fg='#39ff14',
+            bg='#0d0d0d'
         )
         self.interval_display.pack(side=tk.LEFT, padx=(5, 0))
 
@@ -245,8 +245,8 @@ class OCRTranslator:
             self.root,
             text="Current Translation",
             font=('Segoe UI', 10, 'bold'),
-            fg='#e94560',
-            bg='#1a1a2e'
+            fg='#00ff41',
+            bg='#0d0d0d'
         )
         current_frame.pack(fill=tk.X, padx=10, pady=5)
 
@@ -256,7 +256,7 @@ class OCRTranslator:
             text="Original:",
             font=('Segoe UI', 9, 'bold'),
             fg='#a0a0a0',
-            bg='#1a1a2e'
+            bg='#0d0d0d'
         )
         orig_label.pack(anchor=tk.W, padx=10, pady=(5, 0))
 
@@ -264,7 +264,7 @@ class OCRTranslator:
             current_frame,
             height=6,
             font=('MS Gothic', 11),
-            bg='#0f3460',
+            bg='#1a3a1a',
             fg='white',
             wrap=tk.WORD,
             relief=tk.FLAT
@@ -277,7 +277,7 @@ class OCRTranslator:
             text="Translation:",
             font=('Segoe UI', 9, 'bold'),
             fg='#a0a0a0',
-            bg='#1a1a2e'
+            bg='#0d0d0d'
         )
         trans_label.pack(anchor=tk.W, padx=10, pady=(5, 0))
 
@@ -285,8 +285,8 @@ class OCRTranslator:
             current_frame,
             height=6,
             font=('Segoe UI', 11),
-            bg='#0f3460',
-            fg='#00ff88',
+            bg='#1a3a1a',
+            fg='#39ff14',
             wrap=tk.WORD,
             relief=tk.FLAT
         )
@@ -297,15 +297,15 @@ class OCRTranslator:
             self.root,
             text="Translation History",
             font=('Segoe UI', 10, 'bold'),
-            fg='#e94560',
-            bg='#1a1a2e'
+            fg='#00ff41',
+            bg='#0d0d0d'
         )
         history_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
 
         self.history_text = scrolledtext.ScrolledText(
             history_frame,
             font=('Segoe UI', 9),
-            bg='#16213e',
+            bg='#0a1a0a',
             fg='white',
             wrap=tk.WORD,
             relief=tk.FLAT
@@ -356,23 +356,23 @@ class OCRTranslator:
         """Toggle auto-translate mode"""
         self.auto_mode = not self.auto_mode
         if self.auto_mode:
-            self.auto_btn.config(text="Auto: ON", bg='#00ff88', fg='black')
+            self.auto_btn.config(text="Auto: ON", bg='#39ff14', fg='black')
             interval_sec = self.auto_interval // 1000
             self.update_status(f"Auto mode ON - capturing every {interval_sec}s")
             self.auto_translate_loop()
         else:
-            self.auto_btn.config(text="Auto: OFF", bg='#0f3460', fg='white')
+            self.auto_btn.config(text="Auto: OFF", bg='#1a3a1a', fg='white')
             self.update_status("Auto mode OFF - Press F1 to capture")
 
     def toggle_model(self):
         """Toggle between Haiku and Sonnet models"""
         if self.current_model == 'haiku':
             self.current_model = 'sonnet'
-            self.model_btn.config(text="Sonnet", bg='#e94560', fg='white')
+            self.model_btn.config(text="Sonnet", bg='#00ff41', fg='white')
             self.update_status("Model: Sonnet (higher quality)")
         else:
             self.current_model = 'haiku'
-            self.model_btn.config(text="Haiku", bg='#00ff88', fg='black')
+            self.model_btn.config(text="Haiku", bg='#39ff14', fg='black')
             self.update_status("Model: Haiku (faster)")
 
     def update_interval(self, value):
