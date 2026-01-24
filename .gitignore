@@ -1,5 +1,19 @@
-# List of ignore folder and files
+# Build outputs
+/dist/
+/build/
+*.spec
+
+# Temp files
 /[Tt]emp/
-# List of ignore files
+__pycache__/
+*.pyc
+
+# Executables
 *.exe
-*.txt
+
+# IDE
+.vscode/
+.idea/
+
+# Claude Code settings
+.claude/

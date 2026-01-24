@@ -1,7 +1,6 @@
 """
-Alice OCR Translator
+OCR Translator
 Real-time OCR + Translation using Claude Code CLI
-A special project by Kiyo & Alice
 """
 
 import tkinter as tk
@@ -15,7 +14,7 @@ import os
 import tempfile
 from datetime import datetime
 
-class AliceVNTranslator:
+class OCRTranslator:
     """Main application controller"""
 
     def __init__(self):
@@ -30,7 +29,7 @@ class AliceVNTranslator:
 
         # Create main root window (Translation Window)
         self.root = tk.Tk()
-        self.root.title("Alice OCR Translator")
+        self.root.title("OCR Translator")
         self.root.geometry("600x750+950+100")
         self.root.configure(bg='#1a1a2e')
         self.root.protocol("WM_DELETE_WINDOW", self.quit_app)
@@ -45,14 +44,14 @@ class AliceVNTranslator:
         keyboard.add_hotkey('F1', self.capture_and_translate)
         keyboard.add_hotkey('Escape', self.quit_app)
 
-        print("Alice VN Translator initialized!")
+        print("OCR Translator initialized!")
         print("F1 - Capture and translate")
         print("Escape - Quit")
 
     def create_glass_overlay(self):
         """Create the transparent overlay window"""
         self.overlay = tk.Toplevel(self.root)
-        self.overlay.title("Alice - Glass Overlay")
+        self.overlay.title("Capture Region")
         self.overlay.attributes('-alpha', 0.3)
         self.overlay.attributes('-topmost', True)
         self.overlay.overrideredirect(True)
@@ -138,7 +137,7 @@ class AliceVNTranslator:
 
         title_label = tk.Label(
             header,
-            text="Alice OCR Translator",
+            text="OCR Translator",
             font=('Segoe UI', 16, 'bold'),
             fg='#e94560',
             bg='#16213e'
@@ -525,7 +524,7 @@ ENGLISH:
             try:
                 # Capture screen
                 image_path = self.capture_screen()
-                self.root.after(0, lambda: self.update_status("Translating with Alice..."))
+                self.root.after(0, lambda: self.update_status("Translating..."))
 
                 # Get translation from Claude
                 response = self.translate_with_claude(image_path)
@@ -576,10 +575,10 @@ ENGLISH:
 
 if __name__ == "__main__":
     print("=" * 50)
-    print("  Alice OCR Translator")
-    print("  A special project by Kiyo & Alice")
+    print("  OCR Translator")
+    print("  Powered by Claude Code CLI")
     print("=" * 50)
     print()
 
-    app = AliceVNTranslator()
+    app = OCRTranslator()
     app.run()
