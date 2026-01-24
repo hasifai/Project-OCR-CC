@@ -14,6 +14,58 @@ import os
 import tempfile
 from datetime import datetime
 
+# Theme definitions
+THEMES = {
+    'Cyber Blue': {
+        'bg': '#0a1628',
+        'header': '#0d2137',
+        'accent': '#00d4ff',
+        'overlay': '#0080ff',
+        'success': '#00ffff',
+        'button': '#1e3a5f',
+        'text': '#a0a0a0'
+    },
+    'Matrix': {
+        'bg': '#0d0d0d',
+        'header': '#0a1a0a',
+        'accent': '#00ff41',
+        'overlay': '#00cc33',
+        'success': '#39ff14',
+        'button': '#1a3a1a',
+        'text': '#a0a0a0'
+    },
+    'Sunset': {
+        'bg': '#1a1410',
+        'header': '#2a1a10',
+        'accent': '#ff6b35',
+        'overlay': '#ff9500',
+        'success': '#ffc107',
+        'button': '#4a3020',
+        'text': '#a0a0a0'
+    },
+    'Violet': {
+        'bg': '#13091f',
+        'header': '#1a0d2e',
+        'accent': '#9d4edd',
+        'overlay': '#7b2cbf',
+        'success': '#e040fb',
+        'button': '#2d1b4e',
+        'text': '#a0a0a0'
+    },
+    'Arctic': {
+        'bg': '#1a1d21',
+        'header': '#22262b',
+        'accent': '#a8dadc',
+        'overlay': '#457b9d',
+        'success': '#f1faee',
+        'button': '#2d3436',
+        'text': '#a0a0a0'
+    }
+}
+
+THEME_NAMES = list(THEMES.keys())
+
+
 class OCRTranslator:
     """Main application controller"""
 
@@ -26,12 +78,12 @@ class OCRTranslator:
         self.auto_mode = False
         self.auto_interval = 5000  # 5 seconds in milliseconds
         self.current_model = 'haiku'  # Default to haiku for speed
+        self.current_theme_index = 0  # Start with Cyber Blue
 
         # Create main root window (Translation Window)
         self.root = tk.Tk()
         self.root.title("OCR Translator")
         self.root.geometry("600x750+950+100")
-        self.root.configure(bg='#0d0d0d')
         self.root.protocol("WM_DELETE_WINDOW", self.quit_app)
 
         # Create glass overlay as Toplevel
@@ -40,6 +92,9 @@ class OCRTranslator:
         # Create translation UI
         self.create_translation_ui()
 
+        # Apply initial theme
+        self.apply_theme()
+
         # Setup hotkey
         keyboard.add_hotkey('F1', self.capture_and_translate)
         keyboard.add_hotkey('Escape', self.quit_app)
@@ -47,6 +102,62 @@ class OCRTranslator:
         print("OCR Translator initialized!")
         print("F1 - Capture and translate")
         print("Escape - Quit")
+
+    def get_theme(self):
+        """Get current theme colors"""
+        theme_name = THEME_NAMES[self.current_theme_index]
+        return THEMES[theme_name]
+
+    def apply_theme(self):
+        """Apply current theme to all UI elements"""
+        t = self.get_theme()
+        theme_name = THEME_NAMES[self.current_theme_index]
+
+        # Root window
+        self.root.configure(bg=t['bg'])
+
+        # Overlay
+        self.overlay_frame.configure(bg=t['overlay'], highlightbackground=t['overlay'])
+        self.overlay_label.configure(fg=t['overlay'])
+
+        # Header
+        self.header.configure(bg=t['header'])
+        self.title_label.configure(fg=t['accent'], bg=t['header'])
+        self.status_label.configure(fg=t['text'], bg=t['header'])
+
+        # Control bar
+        self.control_bar.configure(bg=t['bg'])
+        self.auto_btn.configure(bg=t['button'] if not self.auto_mode else t['success'],
+                                 fg='white' if not self.auto_mode else 'black')
+        self.clear_btn.configure(bg=t['accent'], fg='black')
+        self.toggle_btn.configure(bg=t['button'], fg='white')
+        self.model_btn.configure(bg=t['success'] if self.current_model == 'haiku' else t['accent'],
+                                  fg='black' if self.current_model == 'haiku' else 'white')
+        self.theme_btn.configure(bg=t['overlay'], fg='white', text=theme_name)
+
+        # Interval frame
+        self.interval_frame.configure(bg=t['bg'])
+        self.interval_label.configure(fg=t['text'], bg=t['bg'])
+        self.interval_slider.configure(bg=t['bg'], troughcolor=t['button'])
+        self.interval_display.configure(fg=t['success'], bg=t['bg'])
+
+        # Current translation frame
+        self.current_frame.configure(fg=t['accent'], bg=t['bg'])
+        self.orig_label.configure(fg=t['text'], bg=t['bg'])
+        self.jp_text.configure(bg=t['button'], fg='white')
+        self.trans_label.configure(fg=t['text'], bg=t['bg'])
+        self.en_text.configure(bg=t['button'], fg=t['success'])
+
+        # History frame
+        self.history_frame.configure(fg=t['accent'], bg=t['bg'])
+        self.history_text.configure(bg=t['header'], fg='white')
+
+    def toggle_theme(self):
+        """Cycle through themes"""
+        self.current_theme_index = (self.current_theme_index + 1) % len(THEME_NAMES)
+        self.apply_theme()
+        theme_name = THEME_NAMES[self.current_theme_index]
+        self.update_status(f"Theme: {theme_name}")
 
     def create_glass_overlay(self):
         """Create the transparent overlay window"""
@@ -60,8 +171,8 @@ class OCRTranslator:
         # Create frame with visible border
         self.overlay_frame = tk.Frame(
             self.overlay,
-            bg='#00cc33',
-            highlightbackground='#00cc33',
+            bg='#0080ff',
+            highlightbackground='#0080ff',
             highlightthickness=3
         )
         self.overlay_frame.pack(fill=tk.BOTH, expand=True)
@@ -75,7 +186,7 @@ class OCRTranslator:
             self.overlay_inner,
             text="Position over text area\nDrag edges to resize | Drag center to move",
             bg='white',
-            fg='#00cc33',
+            fg='#0080ff',
             font=('Segoe UI', 10)
         )
         self.overlay_label.pack(expand=True)
@@ -132,139 +243,151 @@ class OCRTranslator:
         style.configure('TButton', font=('Segoe UI', 10))
 
         # Header
-        header = tk.Frame(self.root, bg='#0a1a0a')
-        header.pack(fill=tk.X, padx=10, pady=(10, 5))
+        self.header = tk.Frame(self.root, bg='#0d2137')
+        self.header.pack(fill=tk.X, padx=10, pady=(10, 5))
 
-        title_label = tk.Label(
-            header,
+        self.title_label = tk.Label(
+            self.header,
             text="OCR Translator",
             font=('Segoe UI', 16, 'bold'),
-            fg='#00ff41',
-            bg='#0a1a0a'
+            fg='#00d4ff',
+            bg='#0d2137'
         )
-        title_label.pack(side=tk.LEFT, padx=10)
+        self.title_label.pack(side=tk.LEFT, padx=10)
 
         self.status_label = tk.Label(
-            header,
+            self.header,
             text="Press F1 to capture",
             font=('Segoe UI', 10),
             fg='#a0a0a0',
-            bg='#0a1a0a'
+            bg='#0d2137'
         )
         self.status_label.pack(side=tk.RIGHT, padx=10)
 
         # Control buttons bar
-        control_bar = tk.Frame(self.root, bg='#0d0d0d')
-        control_bar.pack(fill=tk.X, padx=10, pady=(0, 10))
+        self.control_bar = tk.Frame(self.root, bg='#0a1628')
+        self.control_bar.pack(fill=tk.X, padx=10, pady=(0, 10))
 
         self.auto_btn = tk.Button(
-            control_bar,
+            self.control_bar,
             text="Auto: OFF",
             command=self.toggle_auto,
-            bg='#1a3a1a',
+            bg='#1e3a5f',
             fg='white',
             relief=tk.FLAT,
             font=('Segoe UI', 10)
         )
         self.auto_btn.pack(side=tk.LEFT, padx=5)
 
-        clear_btn = tk.Button(
-            control_bar,
-            text="Clear History",
+        self.clear_btn = tk.Button(
+            self.control_bar,
+            text="Clear",
             command=self.clear_history,
-            bg='#00ff41',
-            fg='white',
+            bg='#00d4ff',
+            fg='black',
             relief=tk.FLAT,
             font=('Segoe UI', 10)
         )
-        clear_btn.pack(side=tk.LEFT, padx=5)
+        self.clear_btn.pack(side=tk.LEFT, padx=5)
 
-        toggle_btn = tk.Button(
-            control_bar,
-            text="Toggle Overlay",
+        self.toggle_btn = tk.Button(
+            self.control_bar,
+            text="Overlay",
             command=self.toggle_overlay,
-            bg='#1a3a1a',
+            bg='#1e3a5f',
             fg='white',
             relief=tk.FLAT,
             font=('Segoe UI', 10)
         )
-        toggle_btn.pack(side=tk.LEFT, padx=5)
+        self.toggle_btn.pack(side=tk.LEFT, padx=5)
 
         # Model toggle button
         self.model_btn = tk.Button(
-            control_bar,
+            self.control_bar,
             text="Haiku",
             command=self.toggle_model,
-            bg='#39ff14',
+            bg='#00ffff',
             fg='black',
             relief=tk.FLAT,
             font=('Segoe UI', 10)
         )
         self.model_btn.pack(side=tk.LEFT, padx=5)
 
-        # Interval control frame
-        interval_frame = tk.Frame(control_bar, bg='#0d0d0d')
-        interval_frame.pack(side=tk.RIGHT, padx=5)
+        # Theme toggle button
+        self.theme_btn = tk.Button(
+            self.control_bar,
+            text="Cyber Blue",
+            command=self.toggle_theme,
+            bg='#0080ff',
+            fg='white',
+            relief=tk.FLAT,
+            font=('Segoe UI', 10)
+        )
+        self.theme_btn.pack(side=tk.LEFT, padx=5)
 
-        interval_label = tk.Label(
-            interval_frame,
+        # Interval control frame
+        self.interval_frame = tk.Frame(self.control_bar, bg='#0a1628')
+        self.interval_frame.pack(side=tk.RIGHT, padx=5)
+
+        self.interval_label = tk.Label(
+            self.interval_frame,
             text="Interval:",
             font=('Segoe UI', 9),
             fg='#a0a0a0',
-            bg='#0d0d0d'
+            bg='#0a1628'
         )
-        interval_label.pack(side=tk.LEFT)
+        self.interval_label.pack(side=tk.LEFT)
 
         self.interval_var = tk.IntVar(value=5)
         self.interval_slider = tk.Scale(
-            interval_frame,
+            self.interval_frame,
             from_=1,
             to=30,
             orient=tk.HORIZONTAL,
             variable=self.interval_var,
             command=self.update_interval,
-            bg='#0d0d0d',
+            bg='#0a1628',
             fg='white',
             highlightthickness=0,
-            troughcolor='#1a3a1a',
+            troughcolor='#1e3a5f',
             length=100
         )
         self.interval_slider.pack(side=tk.LEFT)
 
         self.interval_display = tk.Label(
-            interval_frame,
+            self.interval_frame,
             text="5s",
             font=('Segoe UI', 9),
-            fg='#39ff14',
-            bg='#0d0d0d'
+            fg='#00ffff',
+            bg='#0a1628'
         )
         self.interval_display.pack(side=tk.LEFT, padx=(5, 0))
 
         # Current translation display
-        current_frame = tk.LabelFrame(
+        self.current_frame = tk.LabelFrame(
             self.root,
             text="Current Translation",
             font=('Segoe UI', 10, 'bold'),
-            fg='#00ff41',
-            bg='#0d0d0d'
+            fg='#00d4ff',
+            bg='#0a1628'
         )
-        current_frame.pack(fill=tk.X, padx=10, pady=5)
+        self.current_frame.pack(fill=tk.X, padx=10, pady=5)
 
         # Original text
-        orig_label = tk.Label(
-            current_frame,
+        self.orig_label = tk.Label(
+            self.current_frame,
             text="Original:",
             font=('Segoe UI', 9, 'bold'),
             fg='#a0a0a0',
-            bg='#0d0d0d'
+            bg='#0a1628'
         )
-        orig_label.pack(anchor=tk.W, padx=10, pady=(5, 0))
+        self.orig_label.pack(anchor=tk.W, padx=10, pady=(5, 0))
 
         self.jp_text = tk.Text(
-            current_frame,
+            self.current_frame,
             height=6,
             font=('MS Gothic', 11),
-            bg='#1a3a1a',
+            bg='#1e3a5f',
             fg='white',
             wrap=tk.WORD,
             relief=tk.FLAT
@@ -272,40 +395,40 @@ class OCRTranslator:
         self.jp_text.pack(fill=tk.X, padx=10, pady=5)
 
         # Translation
-        trans_label = tk.Label(
-            current_frame,
+        self.trans_label = tk.Label(
+            self.current_frame,
             text="Translation:",
             font=('Segoe UI', 9, 'bold'),
             fg='#a0a0a0',
-            bg='#0d0d0d'
+            bg='#0a1628'
         )
-        trans_label.pack(anchor=tk.W, padx=10, pady=(5, 0))
+        self.trans_label.pack(anchor=tk.W, padx=10, pady=(5, 0))
 
         self.en_text = tk.Text(
-            current_frame,
+            self.current_frame,
             height=6,
             font=('Segoe UI', 11),
-            bg='#1a3a1a',
-            fg='#39ff14',
+            bg='#1e3a5f',
+            fg='#00ffff',
             wrap=tk.WORD,
             relief=tk.FLAT
         )
         self.en_text.pack(fill=tk.X, padx=10, pady=5)
 
         # History
-        history_frame = tk.LabelFrame(
+        self.history_frame = tk.LabelFrame(
             self.root,
             text="Translation History",
             font=('Segoe UI', 10, 'bold'),
-            fg='#00ff41',
-            bg='#0d0d0d'
+            fg='#00d4ff',
+            bg='#0a1628'
         )
-        history_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
+        self.history_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
 
         self.history_text = scrolledtext.ScrolledText(
-            history_frame,
+            self.history_frame,
             font=('Segoe UI', 9),
-            bg='#0a1a0a',
+            bg='#0d2137',
             fg='white',
             wrap=tk.WORD,
             relief=tk.FLAT
@@ -355,24 +478,26 @@ class OCRTranslator:
     def toggle_auto(self):
         """Toggle auto-translate mode"""
         self.auto_mode = not self.auto_mode
+        t = self.get_theme()
         if self.auto_mode:
-            self.auto_btn.config(text="Auto: ON", bg='#39ff14', fg='black')
+            self.auto_btn.config(text="Auto: ON", bg=t['success'], fg='black')
             interval_sec = self.auto_interval // 1000
             self.update_status(f"Auto mode ON - capturing every {interval_sec}s")
             self.auto_translate_loop()
         else:
-            self.auto_btn.config(text="Auto: OFF", bg='#1a3a1a', fg='white')
+            self.auto_btn.config(text="Auto: OFF", bg=t['button'], fg='white')
             self.update_status("Auto mode OFF - Press F1 to capture")
 
     def toggle_model(self):
         """Toggle between Haiku and Sonnet models"""
+        t = self.get_theme()
         if self.current_model == 'haiku':
             self.current_model = 'sonnet'
-            self.model_btn.config(text="Sonnet", bg='#00ff41', fg='white')
+            self.model_btn.config(text="Sonnet", bg=t['accent'], fg='white')
             self.update_status("Model: Sonnet (higher quality)")
         else:
             self.current_model = 'haiku'
-            self.model_btn.config(text="Haiku", bg='#39ff14', fg='black')
+            self.model_btn.config(text="Haiku", bg=t['success'], fg='black')
             self.update_status("Model: Haiku (faster)")
 
     def update_interval(self, value):
