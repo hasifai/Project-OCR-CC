@@ -12,25 +12,22 @@ Real-time screen OCR and translation tool powered by Claude Code CLI.
 
 ## Requirements
 
-1. **Claude Code CLI** - Required for translation
-   - Install Node.js from https://nodejs.org/
-   - Run: `npm install -g @anthropic-ai/claude-code`
-   - Run: `claude` (to login with your account)
-
-2. **Python 3.8+** (if running from source)
+**Claude Code CLI** - Required for translation
+1. Install Node.js from https://nodejs.org/
+2. Run: `npm install -g @anthropic-ai/claude-code`
+3. Run: `claude` (to login with your account)
 
 ## Installation
 
-### Option 1: Run from Source
+### Option 1: Download Pre-built
+1. Download `OCR Translator.exe`
+2. Run it!
+
+### Option 2: Run from Source
 ```bash
 pip install -r requirements.txt
 python main.py
 ```
-
-### Option 2: Use Pre-built Launcher
-1. Download `OCR Translator.exe` and `main.py`
-2. Place both files in the same folder
-3. Run `OCR Translator.exe`
 
 ## Usage
 
@@ -50,22 +47,18 @@ python main.py
 - **Haiku/Sonnet** - Switch between fast and quality models
 - **Interval Slider** - Set auto-capture interval (1-30 seconds)
 
-## Building the Launcher
-
-To build the .exe launcher yourself:
+## Building from Source
 
 ```bash
 pip install pyinstaller
-pyinstaller --onefile --noconsole --name "OCR Translator" launcher.py
+pyinstaller --onefile --noconsole --name "OCR Translator" main.py
 ```
 
-Or simply run `build.bat` on Windows.
+Or run `build.bat` on Windows.
 
-## Distribution
+Output: `dist/OCR Translator.exe`
 
-To share this tool, distribute these files together:
-- `OCR Translator.exe` (from dist folder after build)
-- `main.py`
+## Note
 
 Each user needs their own Claude Code CLI login - no API keys are shared or exposed.
 

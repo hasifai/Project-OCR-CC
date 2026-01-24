@@ -11,19 +11,14 @@ if errorlevel 1 (
     pip install pyinstaller
 )
 
-echo Building launcher.exe...
-pyinstaller --onefile --noconsole --name "OCR Translator" launcher.py
+echo Building OCR Translator.exe...
+pyinstaller --onefile --noconsole --name "OCR Translator" main.py
 
 echo.
 echo ========================================
 echo   Build Complete!
 echo ========================================
 echo.
-echo Output files in 'dist' folder:
-echo   - OCR Translator.exe (the launcher)
-echo.
-echo To distribute, copy these files together:
-echo   - dist/OCR Translator.exe
-echo   - main.py
+echo Output: dist\OCR Translator.exe
 echo.
 pause
